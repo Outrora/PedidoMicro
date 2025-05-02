@@ -1,6 +1,7 @@
 package br.com.fiap.mapper;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,44 +13,46 @@ import br.com.fiap.entities.Produto;
 
 public abstract class PedidoMapper {
 
-    public static PedidoDTO toDto(Pedido pedido, Optional<Cliente> cliente) {
-        var listaProduto = pedido.getProdutos()
-                .stream()
-                .map(produto -> new ProdutoDTO(
-                        produto.getId(),
-                        produto.getNome(),
-                        produto.getQuantidade().orElse(0),
-                        produto.getPreco()))
-                .toList();
+        public static PedidoDTO toDto(Pedido pedido, Optional<Cliente> cliente) {
+                var listaProduto = pedido.getProdutos()
+                                .stream()
+                                .map(produto -> new ProdutoDTO(
+                                                produto.getId(),
+                                                produto.getNome(),
+                                                produto.getQuantidade().orElse(0),
+                                                produto.getPreco()))
+                                .toList();
 
-        return PedidoDTO.builder()
-                .cliente(cliente.orElse(null))
-                .dataInclucao(LocalDateTime.now())
-                .estadoPedido(pedido.getEstadoPedido())
-                .produtos(listaProduto)
-                .build();
-    }
-
-    public static Pedido toEntity(PedidoDTO dto) {
-
-        List<Produto> listaProduto = List.of();
-        var idCliente = 0;
-
-        if (dto.getProdutos() != null) {
-            listaProduto = dto.getProdutos()
-                    .stream()
-                    .map(produto -> new Produto(produto.id(), produto.nome(), Optional.of(produto.quantidade()),
-                            produto.preco()))
-                    .toList();
+                return PedidoDTO.builder()
+                                .cliente(cliente.orElse(null))
+                                .dataInclucao(LocalDateTime.now())
+                                .estadoPedido(pedido.getEstadoPedido())
+                                .produtos(listaProduto)
+                                .build();
         }
 
-        if (dto.getCliente() != null) {
-            idCliente = dto.getCliente().codigo();
-        }
+        public static Pedido toEntity(PedidoDTO dto) {
 
-        return new Pedido(dto.getId().toHexString(),
-                idCliente,
-                listaProduto,
-                dto.getEstadoPedido());
-    }
+                List<Produto> listaProduto = Optional.ofNullable(dto.getProdutos())
+                                .orElse(Collections.emptyList())
+                                .stream()
+                                .map(produto -> new Produto(produto.id(), produto.nome(),
+                                                Optional.ofNullable(produto.quantidade()),
+                                                produto.preco()))
+                                .toList();
+
+                int idCliente = Optional.ofNullable(dto.getCliente())
+                                .map(Cliente::codigo)
+                                .orElse(0);
+
+                var retorno = new Pedido(dto.getId().toHexString(), idCliente, listaProduto, dto.getEstadoPedido());
+
+                if (dto.getPagamento() != null) {
+                        var pagamento = PagamentoMapper.toEntity(dto.getPagamento(), retorno);
+                        retorno.alteraPagamento(pagamento);
+                }
+
+                return retorno;
+
+        }
 }

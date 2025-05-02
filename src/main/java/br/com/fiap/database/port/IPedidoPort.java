@@ -15,4 +15,6 @@ public interface IPedidoPort {
 
     List<Pedido> listarPedidos();
 
+    Pedido buscarPorId(String id);
+
 }

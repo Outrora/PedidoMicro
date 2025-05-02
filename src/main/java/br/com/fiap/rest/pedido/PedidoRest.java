@@ -30,7 +30,7 @@ import lombok.AllArgsConstructor;
 @Produces(MediaType.APPLICATION_JSON)
 @AllArgsConstructor(onConstructor = @__(@Inject))
 @Tag(name = "pedido", description = "Endpoints do pedido")
-public class pedidoRest {
+public class PedidoRest {
 
     private final Logger LOG = Logger.getLogger(this.getClass().getName());
 

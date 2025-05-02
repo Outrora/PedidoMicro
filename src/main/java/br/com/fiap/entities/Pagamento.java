@@ -2,6 +2,14 @@ package br.com.fiap.entities;
 
 import java.util.Optional;
 
-public record Pagamento(Optional<String> id, String formaPagamento, EstadoPagamento status, Optional<Pedido> pedido) {
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import lombok.Builder;
+
+@Builder
+public record Pagamento(
+                String formaPagamento,
+                EstadoPagamento status,
+                @JsonIgnore Optional<Pedido> pedido) {
 
 }

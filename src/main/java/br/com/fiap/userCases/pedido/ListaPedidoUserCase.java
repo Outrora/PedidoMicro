@@ -18,4 +18,8 @@ public class ListaPedidoUserCase {
         return port.listarPedidos();
     }
 
+    public Pedido bucarPorId(String id) {
+        return port.buscarPorId(id);
+    }
+
 }

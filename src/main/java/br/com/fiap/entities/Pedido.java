@@ -19,6 +19,11 @@ public class Pedido {
     private List<Produto> produtos;
     private EstadoPedido estadoPedido;
     private BigDecimal valorTotal;
+    private Optional<Pagamento> pagamento;
+
+    public Optional<Pagamento> pegarPagamento() {
+        return Optional.ofNullable(pagamento).orElse(Optional.empty());
+    }
 
     public Pedido(Integer idCliente, List<Produto> produtos) {
         this.id = Optional.empty();
@@ -45,6 +50,10 @@ public class Pedido {
 
     public ObjectId pegarID() {
         return new ObjectId(id.orElse("0"));
+    }
+
+    public void alteraPagamento(Pagamento pagamento) {
+        this.pagamento = Optional.ofNullable(pagamento);
     }
 
 }

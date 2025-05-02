@@ -2,7 +2,6 @@ package br.com.fiap.database.dto;
 
 import br.com.fiap.entities.Cliente;
 import br.com.fiap.entities.EstadoPedido;
-import br.com.fiap.entities.Pagamento;
 import io.quarkus.mongodb.panache.common.MongoEntity;
 import jakarta.annotation.Nullable;
 import lombok.AllArgsConstructor;
@@ -49,6 +48,6 @@ public class PedidoDTO {
 
     @Nullable
     @BsonProperty("pagamento")
-    private Pagamento pagamento;
+    private PagamentoDTO pagamento;
 
 }
