@@ -5,9 +5,11 @@ import java.util.Optional;
 import java.util.Random;
 
 import br.com.fiap.adapters.models.PedidosRequestAdapter;
+import br.com.fiap.database.dto.PagamentoDTO;
 import br.com.fiap.entities.EstadoPagamento;
 import br.com.fiap.entities.Pagamento;
 import br.com.fiap.entities.Pedido;
+import br.com.fiap.mapper.PagamentoMapper;
 
 public abstract class CriarPagamento {
 
@@ -17,6 +19,7 @@ public abstract class CriarPagamento {
 
     public static Pagamento criarPagamento() {
         return Pagamento.builder()
+                .pedido(Optional.empty())
                 .formaPagamento(formas.get(random.nextInt(formas.size())))
                 .status(estados[random.nextInt(estados.length)])
                 .build();
@@ -39,6 +42,10 @@ public abstract class CriarPagamento {
                 .pedido(Optional.of(pedido))
                 .build();
 
+    }
+
+    public static PagamentoDTO criarDTO() {
+        return PagamentoMapper.tDto(criarPagamento());
     }
 
 }

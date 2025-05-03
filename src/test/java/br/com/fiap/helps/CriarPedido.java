@@ -4,17 +4,18 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.bson.types.ObjectId;
 
 import br.com.fiap.adapters.models.PedidosRequestAdapter;
+import br.com.fiap.database.dto.PedidoDTO;
 import br.com.fiap.entities.EstadoPagamento;
 import br.com.fiap.entities.EstadoPedido;
 import br.com.fiap.entities.Pedido;
 import br.com.fiap.entities.Produto;
+import br.com.fiap.mapper.PedidoMapper;
 
 public abstract class CriarPedido {
     private static Random random = new Random();
@@ -23,6 +24,19 @@ public abstract class CriarPedido {
         Integer idCliente = random.nextInt(1000);
         var idPedido = new ObjectId().toHexString();
         return new Pedido(idPedido, idCliente, geraProdutos(), EstadoPedido.EM_PREPARACAO);
+    }
+
+    public static PedidoDTO criarPedidoDTO() {
+        var pedido = PedidoMapper.toDto(criarPedido(), Optional.of(CriarCliente.criarCliente()));
+        pedido.setPagamento(CriarPagamento.criarDTO());
+        return pedido;
+    }
+
+    public static List<PedidoDTO> listaPedidoDto() {
+        return IntStream.range(2, 10)
+                .mapToObj(i -> criarPedidoDTO())
+                .toList();
+
     }
 
     public static Pedido criarPedido() {
@@ -44,7 +58,7 @@ public abstract class CriarPedido {
     }
 
     public static PedidosRequestAdapter criarRequest() {
-        var id = random.nextInt(0, 5);
+        var id = random.nextInt(1, 5);
         return criarRequest(id);
     }
 
@@ -80,5 +94,9 @@ public abstract class CriarPedido {
                 nome,
                 Optional.of(quantidade),
                 preco);
+    }
+
+    public static String criarId() {
+        return new ObjectId().toHexString();
     }
 }

@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import org.bson.types.ObjectId;
+
 import br.com.fiap.database.dto.PedidoDTO;
 import br.com.fiap.database.dto.ProdutoDTO;
 import br.com.fiap.entities.Cliente;
@@ -14,6 +16,11 @@ import br.com.fiap.entities.Produto;
 public abstract class PedidoMapper {
 
         public static PedidoDTO toDto(Pedido pedido, Optional<Cliente> cliente) {
+
+                var id = pedido.getId()
+                                .map(ObjectId::new)
+                                .orElse(null);
+
                 var listaProduto = pedido.getProdutos()
                                 .stream()
                                 .map(produto -> new ProdutoDTO(
@@ -24,6 +31,7 @@ public abstract class PedidoMapper {
                                 .toList();
 
                 return PedidoDTO.builder()
+                                .id(id)
                                 .cliente(cliente.orElse(null))
                                 .dataInclucao(LocalDateTime.now())
                                 .estadoPedido(pedido.getEstadoPedido())

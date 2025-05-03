@@ -4,7 +4,6 @@ import java.util.logging.Logger;
 
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
-import br.com.fiap.adapters.models.PedidosRequestAdapter;
 import br.com.fiap.controller.PagamentoController;
 import br.com.fiap.entities.EstadoPagamento;
 import br.com.fiap.rest.util.RespostaBuilder;
