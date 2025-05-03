@@ -7,6 +7,9 @@ import jakarta.enterprise.context.ApplicationScoped;
 
 import java.util.Random;
 
+import jakarta.annotation.Generated;
+
+@Generated("mock")
 @ApplicationScoped
 public class MockCliente implements ClienteRequest {
 

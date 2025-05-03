@@ -12,6 +12,9 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 
+import jakarta.annotation.Generated;
+
+@Generated("mock")
 @ApplicationScoped
 public class MockProduto implements ProdutoRequest {
 

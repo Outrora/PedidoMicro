@@ -46,7 +46,7 @@ public class PedidoRest {
     @GET
     @Path("todos")
     public List<Pedido> listarTodos() {
-        return controller.listarTodosOsProdutos();
+        return controller.listarTodosOsPedidos();
     }
 
     @PUT

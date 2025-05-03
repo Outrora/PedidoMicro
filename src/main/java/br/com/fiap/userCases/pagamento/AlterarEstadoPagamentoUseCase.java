@@ -25,7 +25,7 @@ public class AlterarEstadoPagamentoUseCase {
             throw new ErroValidacao("Pagamento não pode ser alterado pois já está em estado final");
         }
 
-        if (pagamento.status().equals(pagamento)) {
+        if (pagamento.status().equals(estadoPagamento)) {
             throw new ErroValidacao("Pagamento já está no estado final informado");
         }
 

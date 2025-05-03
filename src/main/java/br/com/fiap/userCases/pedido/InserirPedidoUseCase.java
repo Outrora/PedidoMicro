@@ -27,7 +27,7 @@ public class InserirPedidoUseCase {
         Optional<Cliente> cliente = Optional.empty();
         var idCliente = pedidoResquest.idCliente();
 
-        if (idCliente != 0 && idCliente != null) {
+        if (idCliente != 0) {
             cliente = Optional.of(clienteRequest.buscarClientePorId(idCliente.toString()));
         }
         var quantidadePorProduto = pedidoResquest.produtos()

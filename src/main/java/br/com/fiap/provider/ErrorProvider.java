@@ -1,6 +1,7 @@
 package br.com.fiap.provider;
 
 import br.com.fiap.exception.ErroValidacao;
+import br.com.fiap.exception.ResultadoNaoEncontrado;
 import br.com.fiap.exception.ResultadoVazioErro;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
@@ -22,21 +23,24 @@ public class ErrorProvider implements ExceptionMapper<Exception> {
         if (exception instanceof ResultadoVazioErro) {
             return ApiRespostaErro.criarRespostaErro(
                     exception,
-                    Response.Status.NOT_FOUND
-            );
+                    Response.Status.NOT_FOUND);
         }
 
         if (exception instanceof ErroValidacao) {
             return ApiRespostaErro.criarRespostaErro(
                     exception,
-                    Response.Status.BAD_REQUEST
-            );
+                    Response.Status.BAD_REQUEST);
+        }
+
+        if (exception instanceof ResultadoNaoEncontrado) {
+            return ApiRespostaErro.criarRespostaErro(
+                    exception,
+                    Response.Status.NOT_FOUND);
         }
 
         return ApiRespostaErro.criarRespostaErro(
                 exception,
-                Response.Status.INTERNAL_SERVER_ERROR
-        );
+                Response.Status.INTERNAL_SERVER_ERROR);
     }
 
 }

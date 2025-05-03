@@ -14,7 +14,7 @@ public class ListaPedidoUserCase {
 
     private final IPedidoPort port;
 
-    public List<Pedido> listarTodosOsProdutos() {
+    public List<Pedido> listarTodosOsPedidos() {
         return port.listarPedidos();
     }
 

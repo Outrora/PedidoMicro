@@ -12,5 +12,5 @@ public interface PedidoController {
 
     void alteraEstadoPedido(String idPedido, EstadoPedido estadoPedido);
 
-    List<Pedido> listarTodosOsProdutos();
+    List<Pedido> listarTodosOsPedidos();
 }

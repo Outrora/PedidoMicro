@@ -32,8 +32,8 @@ public class PedidoControllerImpl implements PedidoController {
     }
 
     @Override
-    public List<Pedido> listarTodosOsProdutos() {
-        return listaPedido.listarTodosOsProdutos();
+    public List<Pedido> listarTodosOsPedidos() {
+        return listaPedido.listarTodosOsPedidos();
     }
 
 }
