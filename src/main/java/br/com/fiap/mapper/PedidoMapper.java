@@ -9,13 +9,12 @@ import org.bson.types.ObjectId;
 
 import br.com.fiap.database.dto.PedidoDTO;
 import br.com.fiap.database.dto.ProdutoDTO;
-import br.com.fiap.entities.Cliente;
 import br.com.fiap.entities.Pedido;
 import br.com.fiap.entities.Produto;
 
 public abstract class PedidoMapper {
 
-        public static PedidoDTO toDto(Pedido pedido, Optional<Cliente> cliente) {
+        public static PedidoDTO toDto(Pedido pedido) {
 
                 var id = pedido.getId()
                                 .map(ObjectId::new)
@@ -32,7 +31,7 @@ public abstract class PedidoMapper {
 
                 return PedidoDTO.builder()
                                 .id(id)
-                                .cliente(cliente.orElse(null))
+                                .idCliente(pedido.getIdCliente())
                                 .dataInclucao(LocalDateTime.now())
                                 .estadoPedido(pedido.getEstadoPedido())
                                 .produtos(listaProduto)
@@ -49,11 +48,8 @@ public abstract class PedidoMapper {
                                                 produto.preco()))
                                 .toList();
 
-                int idCliente = Optional.ofNullable(dto.getCliente())
-                                .map(Cliente::codigo)
-                                .orElse(0);
-
-                var retorno = new Pedido(dto.getId().toHexString(), idCliente, listaProduto, dto.getEstadoPedido());
+                var retorno = new Pedido(dto.getId().toHexString(), dto.getIdCliente(), listaProduto,
+                                dto.getEstadoPedido());
 
                 if (dto.getPagamento() != null) {
                         var pagamento = PagamentoMapper.toEntity(dto.getPagamento(), retorno);

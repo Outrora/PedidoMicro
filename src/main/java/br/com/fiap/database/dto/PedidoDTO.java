@@ -1,6 +1,5 @@
 package br.com.fiap.database.dto;
 
-import br.com.fiap.entities.Cliente;
 import br.com.fiap.entities.EstadoPedido;
 import io.quarkus.mongodb.panache.common.MongoEntity;
 import jakarta.annotation.Nullable;
@@ -33,8 +32,8 @@ public class PedidoDTO {
     private LocalDateTime dataInclucao;
 
     @Nullable
-    @BsonProperty("cliente")
-    private Cliente cliente;
+    @BsonProperty("id_cliente")
+    private Integer idCliente;
 
     @BsonProperty(value = "estado_pedido")
     private EstadoPedido estadoPedido;

@@ -27,7 +27,7 @@ public abstract class CriarPedido {
     }
 
     public static PedidoDTO criarPedidoDTO() {
-        var pedido = PedidoMapper.toDto(criarPedido(), Optional.of(CriarCliente.criarCliente()));
+        var pedido = PedidoMapper.toDto(criarPedido());
         pedido.setPagamento(CriarPagamento.criarDTO());
         return pedido;
     }
@@ -72,7 +72,7 @@ public abstract class CriarPedido {
     }
 
     public static List<Produto> geraProdutos() {
-        int quantidade = random.nextInt(1, 5);
+        int quantidade = random.nextInt(2, 5);
         return IntStream.range(1, quantidade)
                 .mapToObj(i -> gerarProduto())
                 .toList();

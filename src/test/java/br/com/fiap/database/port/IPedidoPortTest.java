@@ -1,5 +1,8 @@
 package br.com.fiap.database.port;
 
+import static br.com.fiap.helps.CriarPedido.criarId;
+import static br.com.fiap.helps.CriarPedido.criarPedidoDTO;
+import static br.com.fiap.helps.CriarPedido.listaPedidoDto;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -26,129 +29,123 @@ import br.com.fiap.database.dto.PedidoDTO;
 import br.com.fiap.database.repository.PedidoRepository;
 import br.com.fiap.entities.EstadoPedido;
 import br.com.fiap.exception.ResultadoNaoEncontrado;
-import br.com.fiap.helps.CriarCliente;
 import br.com.fiap.helps.CriarPedido;
 import br.com.fiap.mapper.PedidoMapper;
 import io.quarkus.mongodb.panache.PanacheQuery;
 
 class IPedidoPortTest {
 
-    @Mock
-    PedidoRepository repository;
+        @Mock
+        PedidoRepository repository;
 
-    IPedidoPort pedidoPort;
+        IPedidoPort pedidoPort;
 
-    AutoCloseable openMocks;
+        AutoCloseable openMocks;
 
-    @BeforeEach
-    void init() {
-        openMocks = MockitoAnnotations.openMocks(this);
-        pedidoPort = repository;
-    }
+        @BeforeEach
+        void init() {
+                openMocks = MockitoAnnotations.openMocks(this);
+                pedidoPort = repository;
+        }
 
-    @AfterEach
-    void tearDown() throws Exception {
-        openMocks.close();
-    }
+        @AfterEach
+        void tearDown() throws Exception {
+                openMocks.close();
+        }
 
-    @Test
-    void deveCadastrarPedidoCorretamente() {
-        var pedido = CriarPedido.criarPedido();
-        var cliente = Optional.of(CriarCliente.criarCliente());
+        @Test
+        void deveCadastrarPedidoCorretamente() {
+                var pedido = CriarPedido.criarPedido();
 
-        doNothing().when(repository).persist(any(PedidoDTO.class));
-        doCallRealMethod().when(pedidoPort).cadastrarPedido(any(), any());
+                doNothing().when(repository).persist(any(PedidoDTO.class));
+                doCallRealMethod().when(pedidoPort).cadastrarPedido(any());
 
-        pedidoPort.cadastrarPedido(pedido, cliente);
-        var captorPedido = ArgumentCaptor.forClass(PedidoDTO.class);
-        verify(repository, times(1)).persist(captorPedido.capture());
+                pedidoPort.cadastrarPedido(pedido);
+                var captorPedido = ArgumentCaptor.forClass(PedidoDTO.class);
+                verify(repository, times(1)).persist(captorPedido.capture());
 
-        assertThat(captorPedido.getValue())
-                .isNotNull();
+                assertThat(captorPedido.getValue())
+                                .isNotNull();
 
-        assertThat(captorPedido.getValue().getProdutos())
-                .isNotEmpty()
-                .hasSize(pedido.getProdutos().size());
-    }
+                assertThat(captorPedido.getValue().getProdutos())
+                                .isNotEmpty()
+                                .hasSize(pedido.getProdutos().size());
+        }
 
-    @Test
-    void deveEditarSatusPedidoCorretamente() {
-        var pedido = CriarPedido.criarPedido();
-        var dto = PedidoMapper.toDto(pedido, Optional.empty());
+        @Test
+        void deveEditarSatusPedidoCorretamente() {
 
-        doNothing().when(repository).persistOrUpdate(any(PedidoDTO.class));
-        when(repository.findById(any())).thenReturn(dto);
-        doCallRealMethod().when(repository).editarStatusPedido(anyString(), any());
+                var dto = criarPedidoDTO();
 
-        pedidoPort.editarStatusPedido(pedido.pegarID().toHexString(), EstadoPedido.FINALIZADO);
+                doNothing().when(repository).persistOrUpdate(any(PedidoDTO.class));
+                when(repository.findById(any())).thenReturn(dto);
+                doCallRealMethod().when(repository).editarStatusPedido(anyString(), any());
 
-        var captorPedido = ArgumentCaptor.forClass(PedidoDTO.class);
+                pedidoPort.editarStatusPedido(criarId(), EstadoPedido.FINALIZADO);
 
-        verify(repository, times(1)).persistOrUpdate(captorPedido.capture());
+                var captorPedido = ArgumentCaptor.forClass(PedidoDTO.class);
 
-        assertThat(captorPedido.getValue())
-                .isNotNull();
+                verify(repository, times(1)).persistOrUpdate(captorPedido.capture());
 
-        assertThat(captorPedido.getValue().getEstadoPedido())
-                .isEqualTo(EstadoPedido.FINALIZADO);
-    }
+                assertThat(captorPedido.getValue())
+                                .isNotNull();
 
-    @Test
-    void deveListarTodosOsProdutos() {
-        var cliente = CriarCliente.criarCliente();
-        List<PedidoDTO> lista = CriarPedido.criarListaPedido()
-                .stream()
-                .map(p -> PedidoMapper.toDto(p, Optional.of(cliente)))
-                .toList();
+                assertThat(captorPedido.getValue().getEstadoPedido())
+                                .isEqualTo(EstadoPedido.FINALIZADO);
+        }
 
-        @SuppressWarnings("unchecked")
-        PanacheQuery<PedidoDTO> panache = mock(PanacheQuery.class);
+        @Test
+        void deveListarTodosOsProdutos() {
+                List<PedidoDTO> lista = listaPedidoDto();
 
-        when(repository.listarPedidos()).thenCallRealMethod();
-        when(repository.findAll()).thenReturn(panache);
-        when(panache.stream()).thenReturn(lista.stream());
+                @SuppressWarnings("unchecked")
+                PanacheQuery<PedidoDTO> panache = mock(PanacheQuery.class);
 
-        var retorno = pedidoPort.listarPedidos();
+                when(repository.listarPedidos()).thenCallRealMethod();
+                when(repository.findAll()).thenReturn(panache);
+                when(panache.stream()).thenReturn(lista.stream());
 
-        verify(repository, times(1)).findAll();
+                var retorno = pedidoPort.listarPedidos();
 
-        assertThat(retorno)
-                .isNotEmpty()
-                .hasSize(lista.size());
-    }
+                verify(repository, times(1)).findAll();
 
-    @Test
-    void deveBucarPoIdCorretamente() {
-        var pedido = PedidoMapper.toDto(CriarPedido.criarPedido(), Optional.empty());
+                assertThat(retorno)
+                                .isNotEmpty()
+                                .hasSize(lista.size());
+        }
 
-        when(repository.findByIdOptional(any())).thenReturn(Optional.of(pedido));
-        doCallRealMethod().when(pedidoPort).buscarPorId(anyString());
+        @Test
+        void deveBucarPoIdCorretamente() {
+                var pedido = PedidoMapper.toDto(CriarPedido.criarPedido());
 
-        var resultado = pedidoPort.buscarPorId(pedido.getId().toHexString());
+                when(repository.findByIdOptional(any())).thenReturn(Optional.of(pedido));
+                doCallRealMethod().when(pedidoPort).buscarPorId(anyString());
 
-        verify(repository, times(1)).findByIdOptional(any());
+                var resultado = pedidoPort.buscarPorId(pedido.getId().toHexString());
 
-        assertThat(resultado)
-                .isNotNull();
+                verify(repository, times(1)).findByIdOptional(any());
 
-        assertThat(resultado.getProdutos())
-                .isNotEmpty()
-                .hasSize(pedido.getProdutos().size());
+                assertThat(resultado)
+                                .isNotNull();
 
-    }
+                assertThat(resultado.getProdutos())
+                                .isNotEmpty()
+                                .hasSize(pedido.getProdutos().size());
 
-    @Test
-    void deveBucarPoIdERetonarErro() {
+        }
 
-        when(repository.findByIdOptional(any())).thenReturn(Optional.empty());
-        doCallRealMethod().when(pedidoPort).buscarPorId(anyString());
+        @Test
+        void deveBucarPoIdERetonarErro() {
 
-        assertThatThrownBy(() -> pedidoPort.buscarPorId(new ObjectId().toHexString()))
-                .isInstanceOf(ResultadoNaoEncontrado.class)
-                .hasMessageContaining("Id do pedido encontrado");
+                when(repository.findByIdOptional(any())).thenReturn(Optional.empty());
+                doCallRealMethod().when(pedidoPort).buscarPorId(anyString());
 
-        verify(repository, times(1)).findByIdOptional(any());
+                assertThatThrownBy(() -> pedidoPort.buscarPorId(new ObjectId().toHexString()))
+                                .isInstanceOf(ResultadoNaoEncontrado.class)
+                                .hasMessageContaining("Id do pedido encontrado");
 
-    }
+                verify(repository, times(1)).findByIdOptional(any());
+
+        }
 
 }

@@ -3,7 +3,6 @@ package br.com.fiap.database.repository;
 import br.com.fiap.database.dto.PedidoDTO;
 import br.com.fiap.database.port.IPagamentoPort;
 import br.com.fiap.database.port.IPedidoPort;
-import br.com.fiap.entities.Cliente;
 import br.com.fiap.entities.EstadoPagamento;
 import br.com.fiap.entities.EstadoPedido;
 import br.com.fiap.entities.Pagamento;
@@ -16,7 +15,6 @@ import io.quarkus.mongodb.panache.PanacheMongoRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.bson.types.ObjectId;
 
@@ -24,8 +22,8 @@ import org.bson.types.ObjectId;
 public class PedidoRepository implements PanacheMongoRepository<PedidoDTO>, IPedidoPort, IPagamentoPort {
 
     @Override
-    public void cadastrarPedido(Pedido pedido, Optional<Cliente> cliente) {
-        persist(PedidoMapper.toDto(pedido, cliente));
+    public void cadastrarPedido(Pedido pedido) {
+        persist(PedidoMapper.toDto(pedido));
     }
 
     @Override

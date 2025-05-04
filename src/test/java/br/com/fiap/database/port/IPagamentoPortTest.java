@@ -11,7 +11,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.Optional;
 
-import org.bson.types.ObjectId;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -50,7 +49,7 @@ class IPagamentoPortTest {
     @Test
     void deveVerificarSeEstarCadastroPagamentoCorretamente() {
         var pedido = CriarPedido.criarPedido();
-        var dto = PedidoMapper.toDto(pedido, Optional.empty());
+        var dto = PedidoMapper.toDto(pedido);
         var pagamentoDto = PagamentoMapper.tDto(pedido.getPagamento().get());
         dto.setPagamento(pagamentoDto);
 
@@ -81,7 +80,7 @@ class IPagamentoPortTest {
     @Test
     void deveVerificarSeEstarAlterarPagamentoCorretamente() {
         var pedido = CriarPedido.criarPedido();
-        var dto = PedidoMapper.toDto(pedido, Optional.empty());
+        var dto = PedidoMapper.toDto(pedido);
         var pagamentoDto = PagamentoMapper.tDto(pedido.getPagamento().get());
         dto.setPagamento(pagamentoDto);
 
