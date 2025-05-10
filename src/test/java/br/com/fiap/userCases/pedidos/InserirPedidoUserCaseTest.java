@@ -5,12 +5,14 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
 
+import org.bson.types.ObjectId;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,6 +24,7 @@ import br.com.fiap.database.port.IPedidoPort;
 import br.com.fiap.entities.Pedido;
 import br.com.fiap.entities.Produto;
 import br.com.fiap.events.persistence.IProdutoEventPort;
+import br.com.fiap.events.producer.PedidoCadastradoEvent;
 import br.com.fiap.exception.ResultadoNaoEncontrado;
 import br.com.fiap.helps.CriarPedido;
 import br.com.fiap.userCases.pedido.InserirPedidoUseCase;
@@ -32,6 +35,8 @@ class InserirPedidoUserCaseTest {
         IProdutoEventPort produtoPort;
         @Mock
         IPedidoPort pedidoPort;
+        @Mock
+        PedidoCadastradoEvent event;
 
         InserirPedidoUseCase useCase;
 
@@ -40,7 +45,7 @@ class InserirPedidoUserCaseTest {
         @BeforeEach
         void init() {
                 openMocks = MockitoAnnotations.openMocks(this);
-                useCase = new InserirPedidoUseCase(produtoPort, pedidoPort);
+                useCase = new InserirPedidoUseCase(produtoPort, pedidoPort, event);
         }
 
         @AfterEach
@@ -60,7 +65,9 @@ class InserirPedidoUserCaseTest {
                 when(produtoPort.buscarTodosProdutos(anySet()))
                                 .thenReturn(listaProduto);
 
-                doNothing().when(pedidoPort).cadastrarPedido(any());
+                when(pedidoPort.cadastrarPedido(any())).thenReturn(new ObjectId().toHexString());
+
+                doNothing().when(event).cadastouPedido(any());
 
                 useCase.inserirPedido(request);
 
@@ -68,6 +75,7 @@ class InserirPedidoUserCaseTest {
 
                 verify(produtoPort, times(1)).buscarTodosProdutos(anySet());
                 verify(pedidoPort, times(1)).cadastrarPedido(captorPedido.capture());
+                verify(event, times(1)).cadastouPedido(any());
 
                 var pedido = captorPedido.getValue();
                 assertThat(pedido)
@@ -94,7 +102,8 @@ class InserirPedidoUserCaseTest {
                 when(produtoPort.buscarTodosProdutos(anySet()))
                                 .thenReturn(listaProduto);
 
-                doNothing().when(pedidoPort).cadastrarPedido(any());
+                when(pedidoPort.cadastrarPedido(any())).thenReturn(new ObjectId().toHexString());
+                doNothing().when(event).cadastouPedido(any());
 
                 useCase.inserirPedido(request);
 
@@ -102,6 +111,7 @@ class InserirPedidoUserCaseTest {
 
                 verify(produtoPort, times(1)).buscarTodosProdutos(anySet());
                 verify(pedidoPort, times(1)).cadastrarPedido(captorPedido.capture());
+                verify(event, times(1)).cadastouPedido(any());
 
                 var pedido = captorPedido.getValue();
                 assertThat(pedido)
@@ -128,14 +138,16 @@ class InserirPedidoUserCaseTest {
                 when(produtoPort.buscarTodosProdutos(anySet()))
                                 .thenReturn(listaProduto);
 
-                doNothing().when(pedidoPort).cadastrarPedido(any());
+                when(pedidoPort.cadastrarPedido(any())).thenReturn(new ObjectId().toHexString());
+                doNothing().when(event).cadastouPedido(any());
 
                 assertThatThrownBy(() -> useCase.inserirPedido(request))
                                 .isInstanceOf(ResultadoNaoEncontrado.class)
                                 .hasMessageContaining("Produto não encontrado na requisição");
 
                 verify(produtoPort, times(1)).buscarTodosProdutos(anySet());
-                verify(pedidoPort, times(0)).cadastrarPedido(any());
+                verify(pedidoPort, never()).cadastrarPedido(any());
+                verify(event, never()).cadastouPedido(any());
 
         }
 

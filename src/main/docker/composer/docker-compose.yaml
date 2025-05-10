@@ -8,9 +8,11 @@ services:
       - "27017:27017"
     volumes:
       - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
+       - mongo_data:/data/db
     env_file:
       - .env
     command: [--auth]
+    
   kafka:
     image: confluentinc/cp-kafka:7.5.0
     container_name: kafka
@@ -36,3 +38,7 @@ services:
       CLUSTER_ID: "5Yr1SIgYQz-b-dgRabWx4g"
     volumes:
       - ./kafka-data:/tmp/kraft-combined-logs
+
+
+volumes:
+  mongo_data:

@@ -22,8 +22,10 @@ import org.bson.types.ObjectId;
 public class PedidoRepository implements PanacheMongoRepository<PedidoDTO>, IPedidoPort, IPagamentoPort {
 
     @Override
-    public void cadastrarPedido(Pedido pedido) {
-        persist(PedidoMapper.toDto(pedido));
+    public String cadastrarPedido(Pedido pedido) {
+        var dto = PedidoMapper.toDto(pedido);
+        persist(dto);
+        return dto.getId().toHexString();
     }
 
     @Override

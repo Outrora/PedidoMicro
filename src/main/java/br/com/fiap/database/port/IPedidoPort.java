@@ -7,7 +7,7 @@ import br.com.fiap.entities.Pedido;
 
 public interface IPedidoPort {
 
-    void cadastrarPedido(Pedido pedido);
+    String cadastrarPedido(Pedido pedido);
 
     void editarStatusPedido(String id, EstadoPedido estado);
 
