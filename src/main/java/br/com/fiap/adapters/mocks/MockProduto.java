@@ -1,6 +1,5 @@
 package br.com.fiap.adapters.mocks;
 
-import br.com.fiap.adapters.pedido.ProdutoRequest;
 import br.com.fiap.entities.Produto;
 import br.com.fiap.exception.ResultadoNaoEncontrado;
 import br.com.fiap.exception.ResultadoVazioErro;
@@ -16,7 +15,7 @@ import jakarta.annotation.Generated;
 
 @Generated("mock")
 @ApplicationScoped
-public class MockProduto implements ProdutoRequest {
+public class MockProduto {
 
     private Random random = new Random();
     private static final String[] PRODUTOS = {
@@ -25,12 +24,10 @@ public class MockProduto implements ProdutoRequest {
             "Biscoito", "Chocolate", "Refrigerante", "Suco", "Iogurte"
     };
 
-    @Override
     public Produto bucarProdutoPorId(Integer id) throws ResultadoNaoEncontrado {
         return criarProduto(id);
     }
 
-    @Override
     public List<Produto> buscarTodosProdutos(Set<Integer> ids) throws ResultadoVazioErro {
         return ids.stream()
                 .map(id -> criarProduto(id))

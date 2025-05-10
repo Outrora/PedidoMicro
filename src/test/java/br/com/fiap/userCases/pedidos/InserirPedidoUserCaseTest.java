@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anySet;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -19,10 +18,10 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import br.com.fiap.adapters.pedido.ProdutoRequest;
 import br.com.fiap.database.port.IPedidoPort;
 import br.com.fiap.entities.Pedido;
 import br.com.fiap.entities.Produto;
+import br.com.fiap.events.persistence.IProdutoEventPort;
 import br.com.fiap.exception.ResultadoNaoEncontrado;
 import br.com.fiap.helps.CriarPedido;
 import br.com.fiap.userCases.pedido.InserirPedidoUseCase;
@@ -30,7 +29,7 @@ import br.com.fiap.userCases.pedido.InserirPedidoUseCase;
 class InserirPedidoUserCaseTest {
 
         @Mock
-        ProdutoRequest produtoRequest;
+        IProdutoEventPort produtoPort;
         @Mock
         IPedidoPort pedidoPort;
 
@@ -41,7 +40,7 @@ class InserirPedidoUserCaseTest {
         @BeforeEach
         void init() {
                 openMocks = MockitoAnnotations.openMocks(this);
-                useCase = new InserirPedidoUseCase(produtoRequest, pedidoPort);
+                useCase = new InserirPedidoUseCase(produtoPort, pedidoPort);
         }
 
         @AfterEach
@@ -53,12 +52,12 @@ class InserirPedidoUserCaseTest {
         void deveCadastraCorretamenteUmPedidoComIdCliente() {
                 var request = CriarPedido.criarRequest();
 
-                List<Produto> listaProduto = request.produtos()
+                List<Produto> listaProduto = request.getProdutos()
                                 .stream()
                                 .map(p -> CriarPedido.gerarProduto(p.id()))
                                 .toList();
 
-                when(produtoRequest.buscarTodosProdutos(anySet()))
+                when(produtoPort.buscarTodosProdutos(anySet()))
                                 .thenReturn(listaProduto);
 
                 doNothing().when(pedidoPort).cadastrarPedido(any());
@@ -67,7 +66,7 @@ class InserirPedidoUserCaseTest {
 
                 var captorPedido = ArgumentCaptor.forClass(Pedido.class);
 
-                verify(produtoRequest, times(1)).buscarTodosProdutos(anySet());
+                verify(produtoPort, times(1)).buscarTodosProdutos(anySet());
                 verify(pedidoPort, times(1)).cadastrarPedido(captorPedido.capture());
 
                 var pedido = captorPedido.getValue();
@@ -76,7 +75,7 @@ class InserirPedidoUserCaseTest {
 
                 assertThat(pedido.getIdCliente())
                                 .isNotNull()
-                                .isEqualTo(request.idCliente());
+                                .isEqualTo(request.getCodigoCliente());
 
                 assertThat(pedido.getProdutos())
                                 .isNotEmpty()
@@ -87,12 +86,12 @@ class InserirPedidoUserCaseTest {
         @Test
         void deveCadastraCorretamenteUmPedidoQuandoNaoTemOIdClienteEZero() {
                 var request = CriarPedido.criarRequest(0);
-                List<Produto> listaProduto = request.produtos()
+                List<Produto> listaProduto = request.getProdutos()
                                 .stream()
                                 .map(p -> CriarPedido.gerarProduto(p.id()))
                                 .toList();
 
-                when(produtoRequest.buscarTodosProdutos(anySet()))
+                when(produtoPort.buscarTodosProdutos(anySet()))
                                 .thenReturn(listaProduto);
 
                 doNothing().when(pedidoPort).cadastrarPedido(any());
@@ -101,7 +100,7 @@ class InserirPedidoUserCaseTest {
 
                 var captorPedido = ArgumentCaptor.forClass(Pedido.class);
 
-                verify(produtoRequest, times(1)).buscarTodosProdutos(anySet());
+                verify(produtoPort, times(1)).buscarTodosProdutos(anySet());
                 verify(pedidoPort, times(1)).cadastrarPedido(captorPedido.capture());
 
                 var pedido = captorPedido.getValue();
@@ -110,7 +109,7 @@ class InserirPedidoUserCaseTest {
 
                 assertThat(pedido.getIdCliente())
                                 .isNotNull()
-                                .isEqualTo(request.idCliente());
+                                .isEqualTo(request.getCodigoCliente());
 
                 assertThat(pedido.getProdutos())
                                 .isNotEmpty()
@@ -121,12 +120,12 @@ class InserirPedidoUserCaseTest {
         @Test
         void naoDeveCadastraCorretamenteUmPedidoQuandoPoisNaoEncontrouOProduto() {
                 var request = CriarPedido.criarRequest(0);
-                List<Produto> listaProduto = request.produtos()
+                List<Produto> listaProduto = request.getProdutos()
                                 .stream()
                                 .map(p -> CriarPedido.gerarProduto(p.id() + 12))
                                 .toList();
 
-                when(produtoRequest.buscarTodosProdutos(anySet()))
+                when(produtoPort.buscarTodosProdutos(anySet()))
                                 .thenReturn(listaProduto);
 
                 doNothing().when(pedidoPort).cadastrarPedido(any());
@@ -135,7 +134,7 @@ class InserirPedidoUserCaseTest {
                                 .isInstanceOf(ResultadoNaoEncontrado.class)
                                 .hasMessageContaining("Produto não encontrado na requisição");
 
-                verify(produtoRequest, times(1)).buscarTodosProdutos(anySet());
+                verify(produtoPort, times(1)).buscarTodosProdutos(anySet());
                 verify(pedidoPort, times(0)).cadastrarPedido(any());
 
         }
