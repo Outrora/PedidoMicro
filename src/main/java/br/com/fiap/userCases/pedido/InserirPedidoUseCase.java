@@ -35,7 +35,7 @@ public class InserirPedidoUseCase {
 
         for (var id : listaIds) {
             Produto produto = produtos.stream()
-                    .filter(x -> x.getId() == id)
+                    .filter(x -> x.getId().equals(id))
                     .findFirst()
                     .orElseThrow(
                             () -> new ResultadoNaoEncontrado(

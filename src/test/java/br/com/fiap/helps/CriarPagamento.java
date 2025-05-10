@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
-import br.com.fiap.adapters.models.PedidosRequestAdapter;
 import br.com.fiap.database.dto.PagamentoDTO;
 import br.com.fiap.entities.EstadoPagamento;
 import br.com.fiap.entities.Pagamento;

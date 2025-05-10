@@ -142,7 +142,7 @@ class IPedidoPortTest {
 
                 assertThatThrownBy(() -> pedidoPort.buscarPorId(new ObjectId().toHexString()))
                                 .isInstanceOf(ResultadoNaoEncontrado.class)
-                                .hasMessageContaining("Id do pedido encontrado");
+                                .hasMessageContaining("Id do pedido não encontrado");
 
                 verify(repository, times(1)).findByIdOptional(any());
 

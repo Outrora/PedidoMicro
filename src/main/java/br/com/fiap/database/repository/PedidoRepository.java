@@ -71,7 +71,7 @@ public class PedidoRepository implements PanacheMongoRepository<PedidoDTO>, IPed
 
     private PedidoDTO buscarPeloIdInterno(String id) {
         return findByIdOptional(new ObjectId(id))
-                .orElseThrow(() -> new ResultadoNaoEncontrado("Id do pedido encontrado"));
+                .orElseThrow(() -> new ResultadoNaoEncontrado("Id do pedido não encontrado"));
     }
 
 }

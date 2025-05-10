@@ -3,6 +3,7 @@ package br.com.fiap.userCases.pagamento;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -18,6 +19,7 @@ import br.com.fiap.database.port.IPagamentoPort;
 import br.com.fiap.entities.EstadoPagamento;
 import br.com.fiap.exception.ErroValidacao;
 import br.com.fiap.helps.CriarPedido;
+import br.com.fiap.userCases.pedido.AlterarEstadoPedidoUseCase;
 import br.com.fiap.userCases.pedido.ListaPedidoUserCase;
 
 public class AlterarPagamentoUseCaseTest {
@@ -28,13 +30,16 @@ public class AlterarPagamentoUseCaseTest {
     @Mock
     IPagamentoPort pagamentoPort;
 
+    @Mock
+    AlterarEstadoPedidoUseCase alterarEstadoPedidoUseCase;
+
     AlterarEstadoPagamentoUseCase useCase;
     AutoCloseable openMocks;
 
     @BeforeEach
     void init() {
         openMocks = MockitoAnnotations.openMocks(this);
-        useCase = new AlterarEstadoPagamentoUseCase(listaPedido, pagamentoPort);
+        useCase = new AlterarEstadoPagamentoUseCase(listaPedido, pagamentoPort, alterarEstadoPedidoUseCase);
     }
 
     @AfterEach
@@ -49,10 +54,12 @@ public class AlterarPagamentoUseCaseTest {
         EstadoPagamento novoEstado = EstadoPagamento.PAGO;
 
         when(listaPedido.bucarPorId(id)).thenReturn(pedido);
+        doNothing().when(alterarEstadoPedidoUseCase).alterarEstado(anyString(), any());
 
         useCase.alterarPagamento(id, novoEstado);
 
         verify(pagamentoPort, times(1)).alterarPagamento(id, novoEstado);
+        verify(alterarEstadoPedidoUseCase).alterarEstado(anyString(), any());
     }
 
     @Test

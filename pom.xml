@@ -84,6 +84,12 @@
             <artifactId>mockito-junit-jupiter</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-junit5-mockito</artifactId>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
@@ -110,6 +116,12 @@
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-test-mongodb</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.smallrye.reactive</groupId>
+            <artifactId>smallrye-reactive-messaging-in-memory</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

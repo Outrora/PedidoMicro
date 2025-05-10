@@ -17,7 +17,7 @@ public class ProdutoRepository implements PanacheMongoRepository<ProdutoEventDTO
     public Produto bucarProdutoPorId(Integer id) throws ResultadoNaoEncontrado {
         return find("id", id)
                 .firstResultOptional()
-                .map(dto -> ProdutoMapper.toEntity(dto))
+                .map(ProdutoMapper::toEntity)
                 .orElseThrow(() -> new ResultadoNaoEncontrado("Produto não encontrado com ID: " + id));
     }
 
@@ -25,7 +25,7 @@ public class ProdutoRepository implements PanacheMongoRepository<ProdutoEventDTO
     public List<Produto> buscarTodosProdutos(Set<Integer> ids) throws ResultadoVazioErro {
         return list("id in ?1", ids)
                 .stream()
-                .map(dto -> ProdutoMapper.toEntity(dto))
+                .map(ProdutoMapper::toEntity)
                 .toList();
     }
 

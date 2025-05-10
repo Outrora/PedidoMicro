@@ -4,12 +4,14 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.bson.types.ObjectId;
 
 import br.com.fiap.adapters.models.PedidosRequestAdapter;
+import br.com.fiap.adapters.models.PedidosRequestAdapter.ProdutoRequest;
 import br.com.fiap.database.dto.PedidoDTO;
 import br.com.fiap.entities.EstadoPagamento;
 import br.com.fiap.entities.EstadoPedido;
@@ -24,6 +26,12 @@ public abstract class CriarPedido {
         Integer idCliente = random.nextInt(1000);
         var idPedido = new ObjectId().toHexString();
         return new Pedido(idPedido, idCliente, geraProdutos(), EstadoPedido.EM_PREPARACAO);
+    }
+
+    public static Pedido criar(EstadoPedido estadoPedido) {
+        Integer idCliente = random.nextInt(1000);
+        var idPedido = new ObjectId().toHexString();
+        return new Pedido(idPedido, idCliente, geraProdutos(), estadoPedido);
     }
 
     public static PedidoDTO criarPedidoDTO() {
@@ -62,6 +70,14 @@ public abstract class CriarPedido {
         return criarRequest(id);
     }
 
+    public static PedidosRequestAdapter criarRequestValido(Integer quantidadeProdutos) {
+        var id = random.nextInt(1, 5);
+        var lista = IntStream.range(1, quantidadeProdutos)
+                .mapToObj(i -> new PedidosRequestAdapter.ProdutoRequest(i, random.nextInt(100)))
+                .collect(Collectors.toSet());
+        return new PedidosRequestAdapter(id, lista);
+    }
+
     public static PedidosRequestAdapter criarRequest(Integer id) {
 
         var lista = IntStream.range(1, 10)
@@ -71,9 +87,21 @@ public abstract class CriarPedido {
         return new PedidosRequestAdapter(id, lista);
     }
 
+    public static PedidosRequestAdapter criarRequest(Set<ProdutoRequest> listaProduto) {
+        var id = random.nextInt(1, 5);
+        return new PedidosRequestAdapter(id, listaProduto);
+    }
+
     public static List<Produto> geraProdutos() {
         int quantidade = random.nextInt(2, 5);
         return IntStream.range(1, quantidade)
+                .mapToObj(i -> gerarProduto())
+                .toList();
+
+    }
+
+    public static List<Produto> geraProdutos(Integer quantidadeProdutos) {
+        return IntStream.range(1, quantidadeProdutos)
                 .mapToObj(i -> gerarProduto())
                 .toList();
 
