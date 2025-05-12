@@ -36,6 +36,13 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
+
+      - name: Debug PR info
+        run: |
+          echo "Pull Request Number: ${{ github.event.pull_request.number }}"
+          echo "Pull Request Branch: ${{ github.head_ref }}"
+          echo "Pull Request Base: ${{ github.base_ref }}"
+
       - name: Buildado e Passando o Sonar
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
