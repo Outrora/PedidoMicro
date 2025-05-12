@@ -47,21 +47,8 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
-              -Dsonar.projectKey=Outrora_ClienteMicro \
-              -Dsonar.organization=outrora \
-              -Dsonar.host.url=https://sonarcloud.io \
-              -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
-              -Dsonar.pullrequest.key=${{ github.event.pull_request.number }} \
-              -Dsonar.pullrequest.branch=${{ github.head_ref }} \
-              -Dsonar.pullrequest.base=${{ github.base_ref }} \
-              -Dsonar.jacoco.reportPaths=target/site/jacoco/jacoco.xml
-          else
-            mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
-              -Dsonar.projectKey=Outrora_ClienteMicro \
-              -Dsonar.organization=outrora \
-              -Dsonar.host.url=https://sonarcloud.io \
-              -Dsonar.login=${{ secrets.SONAR_TOKEN }} \
-              -Dsonar.jacoco.reportPaths=target/site/jacoco/jacoco.xml
-          fi
+           mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+           -Dsonar.projectKey=Outrora_PedidoMicro \
+           -Dsonar.jacoco.reportPaths=target/site/jacoco/jacoco.xml
+           -Dsonar.organization=outrora \
+           -Dsonar.host.url=https://sonarcloud.io \
