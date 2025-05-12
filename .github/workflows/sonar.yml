@@ -1,10 +1,7 @@
 name: SonarCloud
 
 on:
-  push:        # Aciona em todos os pushs para qualquer branch
-    branches:
-      - '**'
-  pull_request:  # Aciona também em PRs para todas as branches
+  pull_request:
     branches:
       - '**'
 

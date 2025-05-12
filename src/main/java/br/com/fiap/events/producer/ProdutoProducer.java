@@ -16,7 +16,7 @@ import jakarta.inject.Inject;
 
 @ApplicationScoped
 public class ProdutoProducer implements PedidoCadastradoEvent, PedidoAlterarEvent {
-    private final Logger LOG = Logger.getLogger(this.getClass().getName());
+    private final Logger log = Logger.getLogger(this.getClass().getName());
 
     Emitter<PedidoModelEvent> emiterCastadrado;
     Emitter<MPedidoAlterarEvent> emiterAlterado;
@@ -31,16 +31,16 @@ public class ProdutoProducer implements PedidoCadastradoEvent, PedidoAlterarEven
 
     @Override
     public void cadastouPedido(PedidoModelEvent adapter) {
-        LOG.info("Mandando para a fila -  Pedido Cadastro" + adapter.toString());
+        log.log(Level.INFO, "Mandando para a fila -  Pedido Cadastro : {}", adapter.getIdPedido());
         try {
             emiterCastadrado.send(adapter)
-                    .thenRun(() -> LOG.info("Enviado para a Fila - pedido cadastrado"))
+                    .thenRun(() -> log.info("Enviado para a Fila - pedido cadastrado"))
                     .toCompletableFuture()
                     .join();
 
         } catch (CompletionException ex) {
 
-            LOG.log(Level.SEVERE, "Erro ao cadastrar pedido" + ex.getMessage());
+            log.log(Level.SEVERE, "Erro ao cadastrar pedido {}", ex.getMessage());
             throw new ErroValidacao("Erro");
         }
         ;
@@ -48,16 +48,18 @@ public class ProdutoProducer implements PedidoCadastradoEvent, PedidoAlterarEven
 
     @Override
     public void alterarPedido(String id, EstadoPedido estadoPedido) {
-        LOG.info("Mandando para a fila -  Pedido Alterado com id:" + id);
+
+        var info = "Mandando para a fila -  Pedido Alterado com id: " + id.replaceAll("[\n\r]", "_");
+        log.info(info);
         var dadosParaEnviar = new MPedidoAlterarEvent(id, estadoPedido);
 
         try {
             emiterAlterado.send(dadosParaEnviar)
-                    .thenRun(() -> LOG.info("Enviado para a Fila -  pedido alterado com id:" + id))
+                    .thenRun(() -> log.info("Enviado para a Fila -  pedido alterado com id:" + id))
                     .toCompletableFuture()
                     .join(); // força execução imediata e propaga exceção
         } catch (CompletionException ex) {
-            LOG.log(Level.SEVERE, "Erro ao alterar pedido:" + ex.getMessage());
+            log.log(Level.SEVERE, "Erro ao alterar pedido: {}", ex.getMessage());
             throw new ErroValidacao("Erro");
         }
     }
