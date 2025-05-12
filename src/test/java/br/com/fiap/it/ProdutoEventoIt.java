@@ -1,5 +1,8 @@
 package br.com.fiap.it;
 
+import static org.awaitility.Awaitility.await;
+import java.util.concurrent.TimeUnit;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -37,11 +40,12 @@ class ProdutoEventoIt {
     void deverCasdastrarProduto() throws InterruptedException {
         InMemorySource<ProdutoModel> produtoIn = connector.source("produto-cadastrado");
 
-        ProdutoModel model = new ProdutoModel(1, "teste", BigDecimal.ONE);
+        ProdutoModel model = new ProdutoModel(50, "teste", BigDecimal.ONE);
 
         var test = produtoIn.send(model);
         test.complete();
 
-        verify(repository, times(1)).inserirOuEditarProduto(any());
+        await().atMost(2, TimeUnit.SECONDS)
+                .untilAsserted(() -> verify(repository, times(1)).inserirOuEditarProduto(any()));
     }
 }

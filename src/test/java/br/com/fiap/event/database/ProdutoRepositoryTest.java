@@ -30,7 +30,6 @@ import br.com.fiap.events.persistence.ProdutoRepository;
 import br.com.fiap.exception.ResultadoNaoEncontrado;
 import br.com.fiap.helps.CriarPedido;
 import io.quarkus.mongodb.panache.PanacheQuery;
-import lombok.var;
 
 class ProdutoRepositoryTest {
 
