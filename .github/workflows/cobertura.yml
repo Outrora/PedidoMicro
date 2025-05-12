@@ -4,6 +4,11 @@ on:
   push:
   pull_request:
 
+env:
+  QUARKUS_MONGODB_DATABASE: testdb
+  QUARKUS_MONGODB_CONNECTION_STRING: mongodb://localhost:27017
+  DATABASE: testdb
+
 jobs:
   build:
     name: Build and analyze
