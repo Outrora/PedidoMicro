@@ -2,8 +2,7 @@ name: SonarCloud
 
 on:
   pull_request:
-    branches:
-      - '**'
+    types: [opened, synchronize, reopened]
 
 env:
   QUARKUS_MONGODB_DATABASE: testdb
