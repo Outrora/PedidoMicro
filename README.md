@@ -1,78 +1,65 @@
-# code-with-quarkus
+# :hamburger: Lanchonete PosFiap - Micro Pedido
 
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
+![JAVA](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
+![Banco](https://img.shields.io/badge/-MongoDB-13aa52?style=for-the-badge&logo=mongodb&logoColor=white)
+![](https://img.shields.io/badge/Amazon_AWS-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white)
+![Quarkus](https://img.shields.io/badge/QUARKUS-009CAB?style=for-the-badge&logo=quarkus&logoColor=white)
+![Kakfa](https://img.shields.io/badge/Apache_Kafka-231F20?style=for-the-badge&logo=apache-kafka&logoColor=white)
 
-If you want to learn more about Quarkus, please visit its website: <https://quarkus.io/>.
+Este projeto usa Quarkus, o Supersonic Subatomic Java Framework.
 
-## Running the application in dev mode
+Esse e um projeto do Tech Challenge fiap, sobre uma uma lanchonete de bairro que está expandindo devido seu grande
+sucesso. Implementar um sistema de controle de pedidos, possa atender os clientes de maneira eficiente, gerenciando
+seus pedidos e estoques de forma adequada
 
-You can run your application in dev mode that enables live coding using:
+Esse parte se refere ao microserviçoes pedido, que cuida da parte de Pedidos e Pagamento.
 
-```shell script
-./mvnw quarkus:dev
+## :arrow_forward: Rodando a Aplicação
+
+Crie um .env com as seguintes informações:
+
+```
+MONGO_USER=
+MONGO_PASS=
+URL_MONGO=
+DATABASE=
+URL_BANCO=
+KAFKA_URL=
 ```
 
-> **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at <http://localhost:8080/q/dev/>.
+> **NOTE**
 
-## Packaging and running the application
+>Para rodar **localmente** coloque .env na pasta inicial.
+>
+>Para rodar dentro do **container**  coloque .env na pasta *./composer*
+> 
+> ao rodar o script ele falara qual .env ta faltando
 
-The application can be packaged using:
-
-```shell script
-./mvnw package
-```
-
-It produces the `quarkus-run.jar` file in the `target/quarkus-app/` directory.
-Be aware that it’s not an _über-jar_ as the dependencies are copied into the `target/quarkus-app/lib/` directory.
-
-The application is now runnable using `java -jar target/quarkus-app/quarkus-run.jar`.
-
-If you want to build an _über-jar_, execute the following command:
+Para roda a aplicação localmente:
 
 ```shell script
-./mvnw package -Dquarkus.package.jar.type=uber-jar
+chmod +x ./run.sh 
+./run.sh
 ```
 
-The application, packaged as an _über-jar_, is now runnable using `java -jar target/*-runner.jar`.
+> **_NOTE:_**  O Quarkus agora vem com uma Dev UI, que está disponível no modo dev apenas
+> em <http://localhost:8080/q/dev/>.
 
-## Creating a native executable
 
-You can create a native executable using:
+## :wrench: Infraestrutura
 
-```shell script
-./mvnw package -Dnative
-```
+Links pra repositorios da infra do projeto (***Rodar o Projeto em Ordem***):
 
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using:
+1. Infra Banco: https://github.com/Outrora/pos-lanchonete-banco
+2. Infra do EKS: https://github.com/Outrora/pos-lanchonete-eks
+3. Infra Lambda: https://github.com/Outrora/pos-lambda
 
-```shell script
-./mvnw package -Dnative -Dquarkus.native.container-build=true
-```
 
-You can then execute your native executable with: `./target/code-with-quarkus-1.0.0-SNAPSHOT-runner`
+Acesso ao Miro: <https://miro.com/app/board/uXjVLvULzeo=/?share_link_id=352623534822>
 
-If you want to learn more about building native executables, please consult <https://quarkus.io/guides/maven-tooling>.
+Link do Video : <https://youtu.be/ROI1oPu3-Go>
 
-## Related Guides
+## :flags: Dominio 
 
-- Mutiny ([guide](https://quarkus.io/guides/mutiny-primer)): Write reactive applications with the modern Reactive Programming library Mutiny
-- REST ([guide](https://quarkus.io/guides/rest)): A Jakarta REST implementation utilizing build time processing and Vert.x. This extension is not compatible with the quarkus-resteasy extension, or any of the extensions that depend on it.
-- MongoDB client ([guide](https://quarkus.io/guides/mongodb)): Connect to MongoDB in either imperative or reactive style
-- MongoDB with Panache ([guide](https://quarkus.io/guides/mongodb-panache)): Simplify your persistence code for MongoDB via the active record or the repository pattern
-- REST Client ([guide](https://quarkus.io/guides/rest-client)): Call REST services
-- SmallRye OpenAPI ([guide](https://quarkus.io/guides/openapi-swaggerui)): Document your REST APIs with OpenAPI - comes with Swagger UI
-- REST Jackson ([guide](https://quarkus.io/guides/rest#json-serialisation)): Jackson serialization support for Quarkus REST. This extension is not compatible with the quarkus-resteasy extension, or any of the extensions that depend on it
+Acesso ao Miro <https://miro.com/app/board/uXjVLcUH-oM=/?share_link_id=458579459325>
 
-## Provided Code
-
-### REST Client
-
-Invoke different services through REST with JSON
-
-[Related guide section...](https://quarkus.io/guides/rest-client)
-
-### REST
-
-Easily start your REST Web Services
-
-[Related guide section...](https://quarkus.io/guides/getting-started-reactive#reactive-jax-rs-resources)
